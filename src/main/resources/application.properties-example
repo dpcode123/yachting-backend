@@ -1,0 +1,28 @@
+#spring.datasource.type = com.zaxxer.hikari.HikariDataSource => DEFAULT
+spring.datasource.hikari.connection-timeout=20000
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.maximum-pool-size=20
+spring.datasource.hikari.idle-timeout=300000
+spring.datasource.hikari.max-lifetime=1200000
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+jwt.token-validity-seconds=8640000
+jwt.base64-secret=
+
+spring.cache.type=redis
+spring.cache.redis.time-to-live=
+
+youtube.api-key=
+
+# POSTGRES CONNECTION
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+
+# REDIS CONNECTION
+REDIS_URL=
+
+client.origin=

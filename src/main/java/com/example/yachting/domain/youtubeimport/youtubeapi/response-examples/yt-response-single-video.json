@@ -1,0 +1,87 @@
+//https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=Ks-_Mh1QhMc&key=[YOUR_API_KEY]
+{
+  "kind": "youtube#videoListResponse",
+  "etag": "xRMTKRxUjk2Xd3JPyqPZbtsIHi4",
+  "items": [
+    {
+      "kind": "youtube#video",
+      "etag": "UWAf9WPn-laFkc9Laepxq1E2cx8",
+      "id": "Ks-_Mh1QhMc",
+      "snippet": {
+        "publishedAt": "2012-10-01T15:27:35Z",
+        "channelId": "UCAuUUnT6oDeKwE6v1NGQxug",
+        "title": "Video title",
+        "description": "Video description",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/Ks-_Mh1QhMc/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/Ks-_Mh1QhMc/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/Ks-_Mh1QhMc/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/Ks-_Mh1QhMc/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/Ks-_Mh1QhMc/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "TED",
+        "tags": [
+          "TED",
+          "TEDTalk",
+          "TEDTalks",
+          "TED Talk",
+          "TED Talks",
+          "TEDGlobal",
+          "brain",
+          "business",
+          "psychology",
+          "self",
+          "success"
+        ],
+        "categoryId": "22",
+        "liveBroadcastContent": "none",
+        "defaultLanguage": "en",
+        "localized": {
+          "title": "Localized video title",
+          "description": "Localized video description"
+        },
+        "defaultAudioLanguage": "en"
+      },
+      "contentDetails": {
+        "duration": "PT21M3S",
+        "dimension": "2d",
+        "definition": "hd",
+        "caption": "true",
+        "licensedContent": true,
+        "contentRating": {},
+        "projection": "rectangular"
+      },
+      "statistics": {
+        "viewCount": "19379947",
+        "likeCount": "288056",
+        "dislikeCount": "5545",
+        "favoriteCount": "0",
+        "commentCount": "8624"
+      }
+    }
+  ],
+  "pageInfo": {
+    "totalResults": 1,
+    "resultsPerPage": 1
+  }
+}
