@@ -13,14 +13,13 @@ import org.springframework.data.domain.Sort;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class ShipyardServiceImplTest {
+class ShipyardServiceImplUnitTest {
 
     private ShipyardServiceImpl underTest;
     @Mock
     private ShipyardRepository shipyardRepository;
     @Mock
     private ModelMapper modelMapper;
-
 
     @BeforeEach
     void setUp() {
@@ -29,7 +28,7 @@ class ShipyardServiceImplTest {
 
 
     @Test
-    void canFindAllShipyards() throws ResourceNotFoundException {
+    void shouldFindAllShipyards() throws ResourceNotFoundException {
         // when
         try {
             underTest.findAllShipyards();
@@ -40,30 +39,11 @@ class ShipyardServiceImplTest {
     }
 
     @Test
-    void canCountAllShipyards() {
+    void shouldCountAllShipyards() {
         // when
         underTest.countAllShipyards();
         // then
         verify(shipyardRepository).countAllBy();
     }
 
-    @Test
-    @Disabled
-    void canFindShipyardById() throws Exception {
-    }
-
-    @Test
-    @Disabled
-    void canAddShipyard() {
-    }
-
-    @Test
-    @Disabled
-    void canEditShipyard() {
-    }
-
-    @Test
-    @Disabled
-    void canDeleteShipyard() {
-    }
 }
