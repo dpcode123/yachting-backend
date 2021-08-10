@@ -32,18 +32,18 @@ public class VideoControllerPublic {
     @GetMapping(path = "/details/{id}")
     public ResponseEntity<VideoWithRelatedVideosDTO> getVideoWithRelatedVideosCacheable(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(videoService.getVideoWithRelatedVideosCacheable(id));
+                .body(videoService.getCacheableVideoWithRelatedVideos(id));
     }
 
     /**
-     * Gets paginated videos for displaying to user on a PUBLIC page.
+     * Gets CACHEABLE paginated videos for displaying to user on a PUBLIC page.
      * @param videosPagePublic
      * @return response entity containing a page of VideoDTOs.
      */
     @GetMapping(path = "/paginated")
     public ResponseEntity<Page<VideoDTO>> findAllPaginated(VideosPagePublic videosPagePublic) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(videoService.getPaginatedVideosPublic(videosPagePublic));
+                .body(videoService.getCacheablePaginatedPublicVideosPage(videosPagePublic));
     }
 
     /**

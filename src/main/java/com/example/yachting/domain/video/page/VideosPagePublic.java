@@ -43,4 +43,13 @@ public class VideosPagePublic {
     public void setSortBy(String sortBy) {
         this.sortBy = sortBy;
     }
+
+    /**
+     * Redis uses toString method for creating cache keys.
+     * @return pageNumber as a string
+     */
+    @Override
+    public String toString() {
+        return pageNumber;
+    }
 }

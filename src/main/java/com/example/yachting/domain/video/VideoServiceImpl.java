@@ -19,8 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +39,32 @@ public class VideoServiceImpl implements VideoService {
     private final YachtRepository yachtRepository;
     private final ModelMapper modelMapper;
 
+
+    /** {@inheritDoc} */
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "publicvideospage", value = "publicvideospage", key = "#videosPagePublic")
+    public Page<VideoDTO> getCacheablePaginatedPublicVideosPage(VideosPagePublic videosPagePublic) {
+        int pageNumber = Integer.parseInt(videosPagePublic.getPageNumber());
+        int pageSize = videosPagePublic.getPageSize();
+
+        Sort sort = Sort.by(videosPagePublic.getSortDirection(), videosPagePublic.getSortBy());
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<VideoDTO> page = videoRepository.findAllByActiveTrueAndPublishedTrueOrderByPublishedUpdatedAtDesc(pageable)
+                .map(this::mapVideoToDTO);
+
+        return page;
+    }
+
     /**
      * {@inheritDoc}
      * @throws ResourceNotFoundException
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     @Cacheable(cacheNames = "videodetails", value="videodetails", key="#videoId")
-    public VideoWithRelatedVideosDTO getVideoWithRelatedVideosCacheable(Long videoId) {
+    public VideoWithRelatedVideosDTO getCacheableVideoWithRelatedVideos(Long videoId) {
 
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
@@ -225,34 +243,10 @@ public class VideoServiceImpl implements VideoService {
         return videoWithRelatedVideosDTO;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Page<VideoDTO> getPaginatedVideosPublic(VideosPagePublic videosPagePublic) {
-        int pageNumber = Integer.parseInt(videosPagePublic.getPageNumber());
-        int pageSize = videosPagePublic.getPageSize();
 
-        Sort sort = Sort.by(videosPagePublic.getSortDirection(), videosPagePublic.getSortBy());
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Page<VideoDTO> page = videoRepository.findAllByActiveTrueAndPublishedTrueOrderByPublishedUpdatedAtDesc(pageable)
-                .map(this::mapVideoToDTO);
 
-        return page;
-    }
 
-    @Override
-    public Page<VideoDTO> getPaginatedVideosPublicCacheable(VideosPagePublic videosPagePublic) {
-        int pageNumber = Integer.parseInt(videosPagePublic.getPageNumber());
-        int pageSize = videosPagePublic.getPageSize();
-
-        Sort sort = Sort.by(videosPagePublic.getSortDirection(), videosPagePublic.getSortBy());
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-
-        Page<VideoDTO> page = videoRepository.findAllByActiveTrueAndPublishedTrueOrderByPublishedUpdatedAtDesc(pageable)
-                .map(this::mapVideoToDTO);
-
-        return page;
-    }
 
     /** {@inheritDoc} */
     @Override

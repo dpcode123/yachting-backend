@@ -17,11 +17,18 @@ import java.util.List;
 public interface VideoService {
 
     /**
+     * Gets CACHEABLE paginated videos Page for displaying to user on a PUBLIC page.
+     * @param videosPagePublic
+     * @return response entity containing a page of VideoDTOs.
+     */
+    Page<VideoDTO> getCacheablePaginatedPublicVideosPage(VideosPagePublic videosPagePublic);
+
+    /**
      * Gets a single CACHEABLE video with related videos.
      * @param id
      * @return VideoWithRelatedVideosDTO
      */
-    VideoWithRelatedVideosDTO getVideoWithRelatedVideosCacheable(Long id);
+    VideoWithRelatedVideosDTO getCacheableVideoWithRelatedVideos(Long id);
 
     /**
      * Gets a single video.
@@ -91,21 +98,6 @@ public interface VideoService {
      * @return VideoDTO.
      */
     VideoDTO findVideoByYoutubeId(String youtubeId);
-
-    /**
-     * Gets paginated videos for displaying to user on a PUBLIC page.
-     * @param videosPagePublic
-     * @return response entity containing a page of VideoDTOs.
-     */
-    Page<VideoDTO> getPaginatedVideosPublic(VideosPagePublic videosPagePublic);
-
-    /**
-     * Gets CACHEABLE paginated videos for displaying to user on a PUBLIC page.
-     * @param videosPagePublic
-     * @return response entity containing a page of VideoDTOs.
-     */
-    Page<VideoDTO> getPaginatedVideosPublicCacheable(VideosPagePublic videosPagePublic);
-
 
     /**
      * Gets paginated videos filtered by entity status.
