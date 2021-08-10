@@ -29,7 +29,7 @@ public class DomainUserDetailsService implements UserDetailsService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(final String username) {
         return userRepository
                 .findOneByUsername(username)

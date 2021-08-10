@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +29,7 @@ public class ShipyardServiceImpl implements ShipyardService {
      * @throws ResourceNotFoundException if no shipyards are found
      */
     @Override
+    @Transactional(readOnly = true)
     public List<ShipyardDTO> findAllShipyards() {
         List<Shipyard> shipyards = shipyardRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         if (shipyards.isEmpty()) {
@@ -43,6 +44,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 
     /** {@inheritDoc} */
     @Override
+    @Transactional(readOnly = true)
     public Long countAllShipyards() {
         Long count = shipyardRepository.countAllBy();
         return count;
@@ -53,6 +55,7 @@ public class ShipyardServiceImpl implements ShipyardService {
      * @throws ResourceNotFoundException if shipyard is not found
      */
     @Override
+    @Transactional(readOnly = true)
     public ShipyardDTO findShipyardById(Long shipyardId) {
         ShipyardDTO shipyardDTO = shipyardRepository.findById(shipyardId)
                 .map(this::mapShipyardToDTO)

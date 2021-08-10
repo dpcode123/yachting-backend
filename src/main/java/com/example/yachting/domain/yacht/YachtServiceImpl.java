@@ -1,18 +1,14 @@
 package com.example.yachting.domain.yacht;
 
-import com.example.yachting.domain.shipyard.Shipyard;
 import com.example.yachting.domain.shipyard.ShipyardRepository;
-import com.example.yachting.exception.exceptions.ResourceAlreadyExistsException;
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
 import com.example.yachting.exception.exceptions.TransactionFailedException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,6 +30,7 @@ public class YachtServiceImpl implements YachtService {
      * @throws ResourceNotFoundException if no yachts are found
      */
     @Override
+    @Transactional(readOnly = true)
     public List<YachtDTO> findAllYachts() {
         List<Yacht> yachts = yachtRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         if(yachts.isEmpty()) {
@@ -48,6 +45,7 @@ public class YachtServiceImpl implements YachtService {
 
     /** {@inheritDoc} */
     @Override
+    @Transactional(readOnly = true)
     public Long countAllYachts() {
         Long count = yachtRepository.countAllBy();
         return count;
@@ -58,6 +56,7 @@ public class YachtServiceImpl implements YachtService {
      * @throws ResourceNotFoundException if yacht is not found
      */
     @Override
+    @Transactional(readOnly = true)
     public YachtDTO findYachtById(Long id) {
         YachtDTO yachtDTO = yachtRepository.findById(id)
                 .map(this::mapYachtToDTO)

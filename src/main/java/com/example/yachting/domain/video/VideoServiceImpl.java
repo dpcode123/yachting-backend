@@ -93,6 +93,7 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
+    @Transactional(readOnly = true)
     public List<VideoDTO> findAllVideos() {
         List<Video> videos =  videoRepository.findAll();
         if (videos.isEmpty()) {
@@ -108,6 +109,7 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
+    @Transactional(readOnly = true)
     public List<VideoDTO> findImportedVideos() {
         List<Video> videos =  videoRepository.findAllByActiveTrueAndPublishedFalseOrderByImportedAtDesc();
         if (videos.isEmpty()) {
@@ -123,6 +125,7 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
+    @Transactional(readOnly = true)
     public List<VideoDTO> findPublishedVideos() {
         List<Video> videos =  videoRepository.findAllByActiveTrueAndPublishedTrueOrderByPublishedUpdatedAtDesc();
         if (videos.isEmpty()) {
@@ -138,6 +141,7 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
+    @Transactional(readOnly = true)
     public List<VideoDTO> findInactiveVideos() {
         List<Video> videos =  videoRepository.findAllByActiveFalseOrderByActiveUpdatedAtDesc();
         if (videos.isEmpty()) {
@@ -150,6 +154,7 @@ public class VideoServiceImpl implements VideoService {
 
     /** {@inheritDoc} */
     @Override
+    @Transactional(readOnly = true)
     public Long countAllVideos() {
         Long count = videoRepository.countAllBy();
         return count;
@@ -157,6 +162,7 @@ public class VideoServiceImpl implements VideoService {
 
     /** {@inheritDoc} */
     @Override
+    @Transactional(readOnly = true)
     public Long countImportedVideos() {
         Long count = videoRepository.countAllByActiveTrueAndPublishedFalse();
         return count;
@@ -164,6 +170,7 @@ public class VideoServiceImpl implements VideoService {
 
     /** {@inheritDoc} */
     @Override
+    @Transactional(readOnly = true)
     public Long countPublishedVideos() {
         Long count = videoRepository.countAllByActiveTrueAndPublishedTrue();
         return count;
@@ -171,6 +178,7 @@ public class VideoServiceImpl implements VideoService {
 
     /** {@inheritDoc} */
     @Override
+    @Transactional(readOnly = true)
     public Long countRemovedVideos() {
         Long count = videoRepository.countAllByActiveFalse();
         return count;
@@ -178,6 +186,7 @@ public class VideoServiceImpl implements VideoService {
 
     /** {@inheritDoc} */
     @Override
+    @Transactional(readOnly = true)
     public VideoDTO findVideoById(Long videoId) {
         VideoDTO videoDTO = videoRepository.findById(videoId)
                 .map(this::mapVideoToDTO)
@@ -222,6 +231,7 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException if video is not found
      */
     @Override
+    @Transactional(readOnly = true)
     public VideoWithRelatedVideosDTO getVideoWithRelatedVideos(Long videoId) {
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
@@ -250,6 +260,7 @@ public class VideoServiceImpl implements VideoService {
 
     /** {@inheritDoc} */
     @Override
+    @Transactional(readOnly = true)
     public Page<VideoDTO> getPaginatedVideosAdminFilteredByEntityStatus(VideosPageAdmin videosPageAdmin, EntityStatus entityStatus) {
         int pageNumber = Integer.parseInt(videosPageAdmin.getPageNumber());
         int pageSize = videosPageAdmin.getPageSize();
@@ -272,6 +283,7 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
+    @Transactional(readOnly = true)
     public VideoDTO findVideoByYoutubeId(String youtubeId) {
         VideoDTO videoDTO = videoRepository.findByYoutubeId(youtubeId)
                 .map(this::mapVideoToDTO)
@@ -285,6 +297,7 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
+    @Transactional(readOnly = true)
     public List<VideoDTO> findVideosByYachtId(Long yachtId) {
         List<VideoDTO> videoDTOS = getVideosByYacht(yachtId);
         if(videoDTOS.isEmpty()) {
@@ -299,6 +312,7 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
+    @Transactional(readOnly = true)
     public List<VideoDTO> findVideosByYachtShipyardId(Long shipyardId) {
         List<VideoDTO> videoDTOS = getVideosByShipyard(shipyardId);
         if(videoDTOS.isEmpty()) {
