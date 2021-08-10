@@ -17,8 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -81,14 +79,14 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
-    public ResponseEntity<List<VideoDTO>> findAllVideos() {
+    public List<VideoDTO> findAllVideos() {
         List<Video> videos =  videoRepository.findAll();
         if (videos.isEmpty()) {
             throw new ResourceNotFoundException("No videos found.");
         }
 
         List<VideoDTO> videoDTOS = mapVideosToDTOS(videos);
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTOS);
+        return videoDTOS;
     }
 
     /**
@@ -96,14 +94,14 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
-    public ResponseEntity<List<VideoDTO>> findImportedVideos() {
+    public List<VideoDTO> findImportedVideos() {
         List<Video> videos =  videoRepository.findAllByActiveTrueAndPublishedFalseOrderByImportedAtDesc();
         if (videos.isEmpty()) {
             throw new ResourceNotFoundException("No videos found.");
         }
 
         List<VideoDTO> videoDTOS = mapVideosToDTOS(videos);
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTOS);
+        return videoDTOS;
     }
 
     /**
@@ -111,14 +109,14 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
-    public ResponseEntity<List<VideoDTO>> findPublishedVideos() {
+    public List<VideoDTO> findPublishedVideos() {
         List<Video> videos =  videoRepository.findAllByActiveTrueAndPublishedTrueOrderByPublishedUpdatedAtDesc();
         if (videos.isEmpty()) {
             throw new ResourceNotFoundException("No videos found.");
         }
 
         List<VideoDTO> videoDTOS = mapVideosToDTOS(videos);
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTOS);
+        return videoDTOS;
     }
 
     /**
@@ -126,52 +124,52 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
-    public ResponseEntity<List<VideoDTO>> findInactiveVideos() {
+    public List<VideoDTO> findInactiveVideos() {
         List<Video> videos =  videoRepository.findAllByActiveFalseOrderByActiveUpdatedAtDesc();
         if (videos.isEmpty()) {
             throw new ResourceNotFoundException("No videos found.");
         }
 
         List<VideoDTO> videoDTOS = mapVideosToDTOS(videos);
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTOS);
+        return videoDTOS;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ResponseEntity<Long> countAllVideos() {
+    public Long countAllVideos() {
         Long count = videoRepository.countAllBy();
-        return ResponseEntity.status(HttpStatus.OK).body(count);
+        return count;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ResponseEntity<Long> countImportedVideos() {
+    public Long countImportedVideos() {
         Long count = videoRepository.countAllByActiveTrueAndPublishedFalse();
-        return ResponseEntity.status(HttpStatus.OK).body(count);
+        return count;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ResponseEntity<Long> countPublishedVideos() {
+    public Long countPublishedVideos() {
         Long count = videoRepository.countAllByActiveTrueAndPublishedTrue();
-        return ResponseEntity.status(HttpStatus.OK).body(count);
+        return count;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ResponseEntity<Long> countRemovedVideos() {
+    public Long countRemovedVideos() {
         Long count = videoRepository.countAllByActiveFalse();
-        return ResponseEntity.status(HttpStatus.OK).body(count);
+        return count;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ResponseEntity<VideoDTO> findVideoById(Long videoId) {
+    public VideoDTO findVideoById(Long videoId) {
         VideoDTO videoDTO = videoRepository.findById(videoId)
                 .map(this::mapVideoToDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
 
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTO);
+        return videoDTO;
     }
 
     /**
@@ -182,7 +180,7 @@ public class VideoServiceImpl implements VideoService {
      */
     @Override
     @Transactional
-    public ResponseEntity<VideoDTO> editVideo(Long videoId, VideoCommand videoCommand) {
+    public VideoDTO editVideo(Long videoId, VideoCommand videoCommand) {
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
 
@@ -200,7 +198,7 @@ public class VideoServiceImpl implements VideoService {
                 .map(this::mapVideoToDTO)
                 .orElseThrow(() -> new TransactionFailedException("Video not edited."));
 
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTO);
+        return videoDTO;
     }
 
     /**
@@ -210,7 +208,7 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException if video is not found
      */
     @Override
-    public ResponseEntity<VideoWithRelatedVideosDTO> getVideoWithRelatedVideos(Long videoId) {
+    public VideoWithRelatedVideosDTO getVideoWithRelatedVideos(Long videoId) {
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
 
@@ -228,12 +226,12 @@ public class VideoServiceImpl implements VideoService {
                 mapVideoToDTO(video),
                 relatedVideosSameYacht,
                 relatedVideosSameShipyard);
-        return ResponseEntity.status(HttpStatus.OK).body(videoWithRelatedVideosDTO);
+        return videoWithRelatedVideosDTO;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ResponseEntity<Page<VideoDTO>> getPaginatedVideosPublic(VideosPagePublic videosPagePublic) {
+    public Page<VideoDTO> getPaginatedVideosPublic(VideosPagePublic videosPagePublic) {
         int pageNumber = Integer.parseInt(videosPagePublic.getPageNumber());
         int pageSize = videosPagePublic.getPageSize();
 
@@ -243,12 +241,12 @@ public class VideoServiceImpl implements VideoService {
         Page<VideoDTO> page = videoRepository.findAllByActiveTrueAndPublishedTrueOrderByPublishedUpdatedAtDesc(pageable)
                 .map(this::mapVideoToDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(page);
+        return page;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ResponseEntity<Page<VideoDTO>> getPaginatedVideosAdminFilteredByEntityStatus(VideosPageAdmin videosPageAdmin, EntityStatus entityStatus) {
+    public Page<VideoDTO> getPaginatedVideosAdminFilteredByEntityStatus(VideosPageAdmin videosPageAdmin, EntityStatus entityStatus) {
         int pageNumber = Integer.parseInt(videosPageAdmin.getPageNumber());
         int pageSize = videosPageAdmin.getPageSize();
 
@@ -262,7 +260,7 @@ public class VideoServiceImpl implements VideoService {
         };
 
         Page<VideoDTO> videoDTOSPage = videosPage.map(this::mapVideoToDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTOSPage);
+        return videoDTOSPage;
     }
 
     /**
@@ -270,12 +268,12 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
-    public ResponseEntity<VideoDTO> findVideoByYoutubeId(String youtubeId) {
+    public VideoDTO findVideoByYoutubeId(String youtubeId) {
         VideoDTO videoDTO = videoRepository.findByYoutubeId(youtubeId)
                 .map(this::mapVideoToDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
 
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTO);
+        return videoDTO;
     }
 
     /**
@@ -283,13 +281,13 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
-    public ResponseEntity<List<VideoDTO>> findVideosByYachtId(Long yachtId) {
+    public List<VideoDTO> findVideosByYachtId(Long yachtId) {
         List<VideoDTO> videoDTOS = getVideosByYacht(yachtId);
         if(videoDTOS.isEmpty()) {
             throw new ResourceNotFoundException("No videos found.");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTOS);
+        return videoDTOS;
     }
 
     /**
@@ -297,13 +295,13 @@ public class VideoServiceImpl implements VideoService {
      * @throws ResourceNotFoundException
      */
     @Override
-    public ResponseEntity<List<VideoDTO>> findVideosByYachtShipyardId(Long shipyardId) {
+    public List<VideoDTO> findVideosByYachtShipyardId(Long shipyardId) {
         List<VideoDTO> videoDTOS = getVideosByShipyard(shipyardId);
         if(videoDTOS.isEmpty()) {
             throw new ResourceNotFoundException("No videos found.");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(videoDTOS);
+        return videoDTOS;
     }
 
 
@@ -315,7 +313,7 @@ public class VideoServiceImpl implements VideoService {
      */
     @Override
     @Transactional
-    public ResponseEntity<VideoDTO> videoActivation(Long videoId, String activationAction) {
+    public VideoDTO videoActivation(Long videoId, String activationAction) {
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
 
@@ -324,7 +322,7 @@ public class VideoServiceImpl implements VideoService {
         video.setActiveUpdatedAt(LocalDateTime.now());
 
         Video updatedVideo = videoRepository.save(video);
-        return ResponseEntity.status(HttpStatus.OK).body(mapVideoToDTO(updatedVideo));
+        return mapVideoToDTO(updatedVideo);
     }
 
     /**
@@ -333,7 +331,7 @@ public class VideoServiceImpl implements VideoService {
      */
     @Override
     @Transactional
-    public ResponseEntity<VideoDTO> videoPublishing(Long videoId, String publishingAction) {
+    public VideoDTO videoPublishing(Long videoId, String publishingAction) {
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
 
@@ -342,7 +340,7 @@ public class VideoServiceImpl implements VideoService {
         video.setPublishedUpdatedAt(LocalDateTime.now());
 
         Video updatedVideo = videoRepository.save(video);
-        return ResponseEntity.status(HttpStatus.OK).body(mapVideoToDTO(updatedVideo));
+        return mapVideoToDTO(updatedVideo);
     }
 
 

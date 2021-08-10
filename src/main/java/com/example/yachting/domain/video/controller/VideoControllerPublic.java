@@ -44,7 +44,10 @@ public class VideoControllerPublic {
      * @return response entity containing a page of VideoDTOs.
      */
     @GetMapping(path = "/paginated")
-    public ResponseEntity<Page<VideoDTO>> findAllPaginated(VideosPagePublic videosPagePublic) { return videoService.getPaginatedVideosPublic(videosPagePublic); }
+    public ResponseEntity<Page<VideoDTO>> findAllPaginated(VideosPagePublic videosPagePublic) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.getPaginatedVideosPublic(videosPagePublic));
+    }
 
     /**
      * Gets a single video.
@@ -52,7 +55,10 @@ public class VideoControllerPublic {
      * @return response entity containing a VideoDTO.
      */
     @GetMapping(path = "/{id}")
-    public ResponseEntity<VideoDTO> findById(@PathVariable Long id) { return videoService.findVideoById(id); }
+    public ResponseEntity<VideoDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.findVideoById(id));
+    }
 
     /**
      * Gets a single video with related videos.
@@ -61,7 +67,8 @@ public class VideoControllerPublic {
      */
     @GetMapping(path = "/details-nocache/{id}")
     public ResponseEntity<VideoWithRelatedVideosDTO> getVideoWithRelatedVideos(@PathVariable Long id) {
-        return videoService.getVideoWithRelatedVideos(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.getVideoWithRelatedVideos(id));
     }
 
 
@@ -71,7 +78,10 @@ public class VideoControllerPublic {
      * @return response entity containing a list of VideoDTOs.
      */
     @GetMapping(path = "/find-by-yacht/{yachtId}")
-    public ResponseEntity<List<VideoDTO>> findByYacht(@PathVariable Long yachtId) { return videoService.findVideosByYachtId(yachtId); }
+    public ResponseEntity<List<VideoDTO>> findByYacht(@PathVariable Long yachtId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.findVideosByYachtId(yachtId));
+    }
 
     /**
      * Gets videos by yacht's shipyard.
@@ -79,6 +89,9 @@ public class VideoControllerPublic {
      * @return response entity containing a list of VideoDTOs.
      */
     @GetMapping(path = "/find-by-shipyard/{shipyardId}")
-    public ResponseEntity<List<VideoDTO>> findByShipyard(@PathVariable Long shipyardId) { return videoService.findVideosByYachtShipyardId(shipyardId); }
+    public ResponseEntity<List<VideoDTO>> findByShipyard(@PathVariable Long shipyardId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.findVideosByYachtShipyardId(shipyardId));
+    }
 
 }

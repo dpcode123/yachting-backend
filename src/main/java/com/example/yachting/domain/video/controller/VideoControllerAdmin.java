@@ -6,6 +6,7 @@ import com.example.yachting.domain.video.page.VideosPageAdmin;
 import com.example.yachting.domain.video.VideoService;
 import com.example.yachting.domain.video.dto.VideoDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,10 @@ public class VideoControllerAdmin {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping
-    public ResponseEntity<List<VideoDTO>> findAll() { return videoService.findAllVideos(); }
+    public ResponseEntity<List<VideoDTO>> findAll() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.findAllVideos());
+    }
 
     /**
      * Gets all imported (and not yet published or removed) videos.
@@ -42,7 +46,10 @@ public class VideoControllerAdmin {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/imported")
-    public ResponseEntity<List<VideoDTO>> findImportedVideos() { return videoService.findImportedVideos(); }
+    public ResponseEntity<List<VideoDTO>> findImportedVideos() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.findImportedVideos());
+    }
 
     /**
      * Gets all published videos.
@@ -50,7 +57,10 @@ public class VideoControllerAdmin {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/published")
-    public ResponseEntity<List<VideoDTO>> findPublishedVideos() { return videoService.findPublishedVideos(); }
+    public ResponseEntity<List<VideoDTO>> findPublishedVideos() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.findPublishedVideos());
+    }
 
     /**
      * Gets all inactive(removed) videos.
@@ -58,7 +68,10 @@ public class VideoControllerAdmin {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/inactive")
-    public ResponseEntity<List<VideoDTO>> findInactiveVideos() { return videoService.findInactiveVideos(); }
+    public ResponseEntity<List<VideoDTO>> findInactiveVideos() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.findInactiveVideos());
+    }
 
     /**
      * Gets paginated videos filtered by entity status.
@@ -70,7 +83,8 @@ public class VideoControllerAdmin {
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/filtered-paginated")
     public ResponseEntity<Page<VideoDTO>> findImportedVideosPaginated(VideosPageAdmin videosPageAdmin, EntityStatus entityStatus) {
-        return videoService.getPaginatedVideosAdminFilteredByEntityStatus(videosPageAdmin, entityStatus);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.getPaginatedVideosAdminFilteredByEntityStatus(videosPageAdmin, entityStatus));
     }
 
     /**
@@ -82,7 +96,8 @@ public class VideoControllerAdmin {
     @Secured({"ROLE_ADMIN"})
     @PutMapping("/edit/{videoId}")
     public ResponseEntity<VideoDTO> editVideo(@PathVariable Long videoId, @Valid @RequestBody final VideoCommand videoCommand) {
-        return videoService.editVideo(videoId, videoCommand);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.editVideo(videoId, videoCommand));
     }
 
     /**
@@ -94,7 +109,8 @@ public class VideoControllerAdmin {
     @Secured({"ROLE_ADMIN"})
     @PatchMapping("/activation/{videoId}")
     public ResponseEntity<VideoDTO> videoActivation(@PathVariable Long videoId, @Valid @RequestBody final String activationAction) {
-        return videoService.videoActivation(videoId, activationAction);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.videoActivation(videoId, activationAction));
     }
 
     /**
@@ -106,7 +122,8 @@ public class VideoControllerAdmin {
     @Secured({"ROLE_ADMIN"})
     @PatchMapping("/publishing/{videoId}")
     public ResponseEntity<VideoDTO> videoPublishing(@PathVariable Long videoId, @Valid @RequestBody final String publishingAction) {
-        return videoService.videoPublishing(videoId, publishingAction);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.videoPublishing(videoId, publishingAction));
     }
 
 
@@ -118,7 +135,10 @@ public class VideoControllerAdmin {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping(path = "/count/all")
-    public ResponseEntity<Long> countAllVideos() { return videoService.countAllVideos(); }
+    public ResponseEntity<Long> countAllVideos() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.countAllVideos());
+    }
 
     /**
      * Counts all imported (and not yet published or removed) videos.
@@ -126,7 +146,10 @@ public class VideoControllerAdmin {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping(path = "/count/imported")
-    public ResponseEntity<Long> countImported() { return videoService.countImportedVideos(); }
+    public ResponseEntity<Long> countImported() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.countImportedVideos());
+    }
 
     /**
      * Counts all published videos.
@@ -134,7 +157,10 @@ public class VideoControllerAdmin {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping(path = "/count/published")
-    public ResponseEntity<Long> countPublished() { return videoService.countPublishedVideos(); }
+    public ResponseEntity<Long> countPublished() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.countPublishedVideos());
+    }
 
     /**
      * Counts all removed videos.
@@ -142,6 +168,9 @@ public class VideoControllerAdmin {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping(path = "/count/removed")
-    public ResponseEntity<Long> countRemoved() { return videoService.countRemovedVideos(); }
+    public ResponseEntity<Long> countRemoved() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videoService.countRemovedVideos());
+    }
 
 }

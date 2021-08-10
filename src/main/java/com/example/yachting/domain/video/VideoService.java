@@ -26,101 +26,101 @@ public interface VideoService {
     /**
      * Gets a single video.
      * @param id
-     * @return response entity containing a VideoDTO.
+     * @return VideoDTO.
      */
-    ResponseEntity<VideoDTO> findVideoById(Long id);
+    VideoDTO findVideoById(Long id);
 
     /**
      * Gets all videos.
-     * @return response entity containing a list of VideoDTOs.
+     * @return list of VideoDTOs.
      */
-    ResponseEntity<List<VideoDTO>> findAllVideos();
+    List<VideoDTO> findAllVideos();
 
     /**
      * Gets all imported (and not yet published or removed) videos.
-     * @return response entity containing a list of VideoDTOs.
+     * @return list of VideoDTOs.
      */
-    ResponseEntity<List<VideoDTO>> findImportedVideos();
+    List<VideoDTO> findImportedVideos();
 
     /**
      * Gets all published videos.
-     * @return response entity containing a list of VideoDTOs.
+     * @return list of VideoDTOs.
      */
-    ResponseEntity<List<VideoDTO>> findPublishedVideos();
+    List<VideoDTO> findPublishedVideos();
 
     /**
      * Gets all inactive(removed) videos.
-     * @return response entity containing a list of VideoDTOs.
+     * @return list of VideoDTOs.
      */
-    ResponseEntity<List<VideoDTO>> findInactiveVideos();
+    List<VideoDTO> findInactiveVideos();
 
     /**
      * Updates video's details.
      * @param videoId
      * @param videoCommand
-     * @return response entity containing a VideoDTO.
+     * @return VideoDTO.
      */
-    ResponseEntity<VideoDTO> editVideo(Long videoId, VideoCommand videoCommand);
+    VideoDTO editVideo(Long videoId, VideoCommand videoCommand);
 
     /**
      * Updates video's activation status.
      * @param videoId
      * @param activationAction
-     * @return response entity containing a VideoDTO.
+     * @return VideoDTO.
      */
-    ResponseEntity<VideoDTO> videoActivation(Long videoId, String activationAction);
+    VideoDTO videoActivation(Long videoId, String activationAction);
 
     /**
      * Updates video's publishing status.
      * @param videoId
      * @param publishingAction
-     * @return response entity containing a VideoDTO.
+     * @return VideoDTO.
      */
-    ResponseEntity<VideoDTO> videoPublishing(Long videoId, String publishingAction);
+    VideoDTO videoPublishing(Long videoId, String publishingAction);
 
     /**
      * Gets a single video with related videos.
      * @param id
-     * @return response entity containing a VideoWithRelatedVideosDTO.
+     * @return VideoWithRelatedVideosDTO.
      */
-    ResponseEntity<VideoWithRelatedVideosDTO> getVideoWithRelatedVideos(Long id);
+    VideoWithRelatedVideosDTO getVideoWithRelatedVideos(Long id);
 
     /**
      * Gets single video by youtube id.
      * @param youtubeId
-     * @return response entity containing a VideoDTO.
+     * @return VideoDTO.
      */
-    ResponseEntity<VideoDTO> findVideoByYoutubeId(String youtubeId);
+    VideoDTO findVideoByYoutubeId(String youtubeId);
 
     /**
      * Gets paginated videos for displaying to user on a PUBLIC page.
      * @param videosPagePublic
      * @return response entity containing a page of VideoDTOs.
      */
-    ResponseEntity<Page<VideoDTO>> getPaginatedVideosPublic(VideosPagePublic videosPagePublic);
+    Page<VideoDTO> getPaginatedVideosPublic(VideosPagePublic videosPagePublic);
 
     /**
      * Gets paginated videos filtered by entity status.
      * For displaying videos in ADMIN interface.
      * @param videosPageAdmin
      * @param entityStatus
-     * @return response entity containing a page of VideoDTOs.
+     * @return page of VideoDTOs.
      */
-    ResponseEntity<Page<VideoDTO>> getPaginatedVideosAdminFilteredByEntityStatus(VideosPageAdmin videosPageAdmin, EntityStatus entityStatus);
+    Page<VideoDTO> getPaginatedVideosAdminFilteredByEntityStatus(VideosPageAdmin videosPageAdmin, EntityStatus entityStatus);
 
     /**
      * Gets videos by yacht.
      * @param yachtId
-     * @return response entity containing a list of VideoDTOs.
+     * @return list of VideoDTOs.
      */
-    ResponseEntity<List<VideoDTO>> findVideosByYachtId(Long yachtId);
+    List<VideoDTO> findVideosByYachtId(Long yachtId);
 
     /**
      * Gets videos by yacht's shipyard.
      * @param shipyardId
-     * @return response entity containing a list of VideoDTOs.
+     * @return list of VideoDTOs.
      */
-    ResponseEntity<List<VideoDTO>> findVideosByYachtShipyardId(Long shipyardId);
+    List<VideoDTO> findVideosByYachtShipyardId(Long shipyardId);
 
 
     // COUNTERS
@@ -128,29 +128,26 @@ public interface VideoService {
 
     /**
      * Counts all videos.
-     * @return response entity containing a total number of videos.
+     * @return total number of videos.
      */
-    ResponseEntity<Long> countAllVideos();
+    Long countAllVideos();
 
     /**
      * Counts all imported (and not yet published or removed) videos.
-     * @return response entity containing a total number of imported videos.
+     * @return total number of imported videos.
      */
-    ResponseEntity<Long> countImportedVideos();
+    Long countImportedVideos();
 
     /**
      * Counts all published videos.
-     * @return response entity containing a total number of published videos.
+     * @return total number of published videos.
      */
-    ResponseEntity<Long> countPublishedVideos();
+    Long countPublishedVideos();
 
     /**
      * Counts all removed videos.
-     * @return response entity containing a total number of removed videos.
+     * @return total number of removed videos.
      */
-    ResponseEntity<Long> countRemovedVideos();
-
-
-
+    Long countRemovedVideos();
 
 }
