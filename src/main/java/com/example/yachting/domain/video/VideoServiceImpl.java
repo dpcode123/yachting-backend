@@ -199,7 +199,7 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * {@inheritDoc}
-     * If video has yacht, get videos with the same yacht and same shipyard.
+     * If video has a yacht, get videos with the same yacht and same shipyard.
      * Otherwise, empty lists of related videos are added to DTO.
      * @throws ResourceNotFoundException if video is not found
      */
@@ -228,6 +228,20 @@ public class VideoServiceImpl implements VideoService {
     /** {@inheritDoc} */
     @Override
     public Page<VideoDTO> getPaginatedVideosPublic(VideosPagePublic videosPagePublic) {
+        int pageNumber = Integer.parseInt(videosPagePublic.getPageNumber());
+        int pageSize = videosPagePublic.getPageSize();
+
+        Sort sort = Sort.by(videosPagePublic.getSortDirection(), videosPagePublic.getSortBy());
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<VideoDTO> page = videoRepository.findAllByActiveTrueAndPublishedTrueOrderByPublishedUpdatedAtDesc(pageable)
+                .map(this::mapVideoToDTO);
+
+        return page;
+    }
+
+    @Override
+    public Page<VideoDTO> getPaginatedVideosPublicCacheable(VideosPagePublic videosPagePublic) {
         int pageNumber = Integer.parseInt(videosPagePublic.getPageNumber());
         int pageSize = videosPagePublic.getPageSize();
 

@@ -100,6 +100,14 @@ public interface VideoService {
     Page<VideoDTO> getPaginatedVideosPublic(VideosPagePublic videosPagePublic);
 
     /**
+     * Gets CACHEABLE paginated videos for displaying to user on a PUBLIC page.
+     * @param videosPagePublic
+     * @return response entity containing a page of VideoDTOs.
+     */
+    Page<VideoDTO> getPaginatedVideosPublicCacheable(VideosPagePublic videosPagePublic);
+
+
+    /**
      * Gets paginated videos filtered by entity status.
      * For displaying videos in ADMIN interface.
      * @param videosPageAdmin
