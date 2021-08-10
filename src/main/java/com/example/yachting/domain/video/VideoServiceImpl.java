@@ -11,6 +11,7 @@ import com.example.yachting.domain.yacht.Yacht;
 import com.example.yachting.domain.yacht.YachtRepository;
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
 import com.example.yachting.exception.exceptions.TransactionFailedException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -31,17 +32,12 @@ import java.util.stream.Collectors;
  * @author dp
  */
 @Service
+@RequiredArgsConstructor
 public class VideoServiceImpl implements VideoService {
 
     private final VideoRepository videoRepository;
     private final YachtRepository yachtRepository;
     private final ModelMapper modelMapper;
-
-    public VideoServiceImpl(VideoRepository videoRepository, YachtRepository yachtRepository, ModelMapper modelMapper) {
-        this.videoRepository = videoRepository;
-        this.yachtRepository = yachtRepository;
-        this.modelMapper = modelMapper;
-    }
 
     /**
      * {@inheritDoc}

@@ -1,5 +1,6 @@
 package com.example.yachting.domain.staticpage;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,13 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin(origins = {"${client.origin}"})
 @RequestMapping(path = "api/static-page")
+@RequiredArgsConstructor
 public class StaticPageController {
 
     private final StaticPageService staticPageService;
-
-    public StaticPageController(StaticPageService staticPageService) {
-        this.staticPageService = staticPageService;
-    }
 
     /**
      * Gets a static page by name.

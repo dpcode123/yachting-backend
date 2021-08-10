@@ -1,6 +1,7 @@
 package com.example.yachting.domain.youtubeimport;
 
 import com.example.yachting.domain.youtubeimport.youtubeapi.model.ResultsOfImportingByKeyword;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +15,10 @@ import javax.validation.Valid;
 @RestController
 @CrossOrigin(origins = {"${client.origin}"})
 @RequestMapping(path="api/admin/youtube-import/videos")
+@RequiredArgsConstructor
 public class ImportVideoController {
 
     private final ImportVideoService importVideoService;
-
-    public ImportVideoController(ImportVideoService importVideoService) {
-        this.importVideoService = importVideoService;
-    }
 
     /**
      * Searches for videos on youtube api by keyword and imports them to database.

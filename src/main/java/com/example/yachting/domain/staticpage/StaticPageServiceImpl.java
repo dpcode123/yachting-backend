@@ -1,6 +1,7 @@
 package com.example.yachting.domain.staticpage;
 
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,13 +9,10 @@ import org.springframework.stereotype.Service;
  * @author dp
  */
 @Service
+@RequiredArgsConstructor
 public class StaticPageServiceImpl implements StaticPageService {
 
     private final StaticPageRepository staticPageRepository;
-
-    public StaticPageServiceImpl(StaticPageRepository staticPageRepository) {
-        this.staticPageRepository = staticPageRepository;
-    }
 
     /**
      * {@inheritDoc}

@@ -4,6 +4,7 @@ import com.example.yachting.domain.video.VideoService;
 import com.example.yachting.domain.video.dto.VideoDTO;
 import com.example.yachting.domain.video.dto.VideoWithRelatedVideosDTO;
 import com.example.yachting.domain.video.page.VideosPagePublic;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +19,10 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = {"${client.origin}"})
 @RequestMapping(path = "api/video/public")
+@RequiredArgsConstructor
 public class VideoControllerPublic {
 
     private final VideoService videoService;
-
-    public VideoControllerPublic(VideoService videoService) {
-        this.videoService = videoService;
-    }
-
 
     /**
      * Gets a single CACHEABLE video with related videos.

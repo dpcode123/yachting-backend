@@ -1,5 +1,6 @@
 package com.example.yachting.domain.yacht;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -15,14 +16,10 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = {"${client.origin}"})
 @RequestMapping(path="api/yacht")
+@RequiredArgsConstructor
 public class YachtController {
 
     private final YachtService yachtService;
-
-    public YachtController(YachtService yachtService) {
-        this.yachtService = yachtService;
-    }
-
 
     // PUBLIC ENDPOINTS
     // #########################################################################

@@ -6,6 +6,7 @@ import com.example.yachting.exception.exceptions.TransactionFailedException;
 import com.example.yachting.security.auth.authority.UserAuthorityRepository;
 import com.example.yachting.security.auth.user.User;
 import com.example.yachting.security.auth.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RegisterServiceImpl implements RegisterService {
 
     private final static String USER_WITH_USERNAME_ALREADY_EXISTS = "User with username %s already exists.";
@@ -25,12 +27,6 @@ public class RegisterServiceImpl implements RegisterService {
     private final UserRepository userRepository;
     private final UserAuthorityRepository userAuthorityRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public RegisterServiceImpl(UserRepository userRepository, UserAuthorityRepository userAuthorityRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.userRepository = userRepository;
-        this.userAuthorityRepository = userAuthorityRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
 
     @Override
     @Transactional

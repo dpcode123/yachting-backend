@@ -1,6 +1,7 @@
 package com.example.yachting.security.auth.user;
 
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -10,15 +11,12 @@ import java.util.stream.Collectors;
  * User service implementation.
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final static String USER_NOT_FOUND_MESSAGE = "User with username %s not found.";
 
     private final UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     /**
      * {@inheritDoc}

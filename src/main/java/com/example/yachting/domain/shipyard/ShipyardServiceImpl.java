@@ -2,6 +2,7 @@ package com.example.yachting.domain.shipyard;
 
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
 import com.example.yachting.exception.exceptions.TransactionFailedException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,12 @@ import java.util.stream.Collectors;
  * @author dp
  */
 @Service
+@RequiredArgsConstructor
 public class ShipyardServiceImpl implements ShipyardService {
 
     private final ShipyardRepository shipyardRepository;
     private final ModelMapper modelMapper;
 
-    public ShipyardServiceImpl(ShipyardRepository shipyardRepository, ModelMapper modelMapper) {
-        this.shipyardRepository = shipyardRepository;
-        this.modelMapper = modelMapper;
-    }
 
     /**
      * {@inheritDoc}

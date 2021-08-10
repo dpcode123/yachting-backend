@@ -3,6 +3,7 @@ package com.example.yachting.security.auth.login;
 import com.example.yachting.security.jwt.JwtToken;
 import com.example.yachting.security.jwt.JwtFilter;
 import com.example.yachting.security.jwt.TokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +14,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService{
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
-    public LoginServiceImpl(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
-        this.tokenProvider = tokenProvider;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
-    }
 
     @Override
     public ResponseEntity<JwtToken> loginUser(LoginCommand loginCommand) {

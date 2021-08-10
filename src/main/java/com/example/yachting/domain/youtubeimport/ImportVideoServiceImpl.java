@@ -9,6 +9,7 @@ import com.example.yachting.domain.youtubeimport.youtubeapi.model.ResultsOfImpor
 import com.example.yachting.domain.youtubeimport.youtubeapi.model.SearchResponseObjectListOfVideos;
 import com.example.yachting.domain.youtubeimport.youtubeapi.model.YoutubeVideoFromList;
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,17 +23,12 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author dp
  */
 @Service
+@RequiredArgsConstructor
 public class ImportVideoServiceImpl implements ImportVideoService {
 
     private final YoutubeRepository youtubeRepository;
     private final VideoRepository videoRepository;
     private final YachtRepository yachtRepository;
-
-    public ImportVideoServiceImpl(YoutubeRepository youtubeRepository, VideoRepository videoRepository, YachtRepository yachtRepository) {
-        this.youtubeRepository = youtubeRepository;
-        this.videoRepository = videoRepository;
-        this.yachtRepository = yachtRepository;
-    }
 
     /**
      * {@inheritDoc}

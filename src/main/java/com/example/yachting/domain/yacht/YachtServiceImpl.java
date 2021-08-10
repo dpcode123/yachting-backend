@@ -5,6 +5,7 @@ import com.example.yachting.domain.shipyard.ShipyardRepository;
 import com.example.yachting.exception.exceptions.ResourceAlreadyExistsException;
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
 import com.example.yachting.exception.exceptions.TransactionFailedException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -21,17 +22,12 @@ import java.util.stream.Collectors;
  * @author dp
  */
 @Service
+@RequiredArgsConstructor
 public class YachtServiceImpl implements YachtService {
 
     private final YachtRepository yachtRepository;
     private final ShipyardRepository shipyardRepository;
     private final ModelMapper modelMapper;
-
-    public YachtServiceImpl(YachtRepository yachtRepository, ShipyardRepository shipyardRepository, ModelMapper modelMapper) {
-        this.yachtRepository = yachtRepository;
-        this.shipyardRepository = shipyardRepository;
-        this.modelMapper = modelMapper;
-    }
 
     /**
      * {@inheritDoc}

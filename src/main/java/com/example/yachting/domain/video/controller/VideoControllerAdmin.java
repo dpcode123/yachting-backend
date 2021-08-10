@@ -5,6 +5,7 @@ import com.example.yachting.domain.video.VideoCommand;
 import com.example.yachting.domain.video.page.VideosPageAdmin;
 import com.example.yachting.domain.video.VideoService;
 import com.example.yachting.domain.video.dto.VideoDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,10 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = {"${client.origin}"})
 @RequestMapping(path = "api/video/admin")
+@RequiredArgsConstructor
 public class VideoControllerAdmin {
 
     private final VideoService videoService;
-
-    public VideoControllerAdmin(VideoService videoService) {
-        this.videoService = videoService;
-    }
 
     /**
      * Gets all videos.

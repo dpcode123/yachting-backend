@@ -1,6 +1,7 @@
 package com.example.yachting.security.auth.user;
 
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -17,13 +18,10 @@ import static com.example.yachting.security.SecurityUtils.getCurrentUserUsername
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = {"${client.origin}"})
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     /**
      * Gets current user.
