@@ -38,7 +38,7 @@ public class YachtServiceImpl implements YachtService {
      * @throws ResourceNotFoundException if no yachts are found
      */
     @Override
-    public ResponseEntity<List<YachtDTO>> findAllYachts() {
+    public List<YachtDTO> findAllYachts() {
         List<Yacht> yachts = yachtRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         if(yachts.isEmpty()) {
             throw new ResourceNotFoundException("No yachts found.");
@@ -47,14 +47,14 @@ public class YachtServiceImpl implements YachtService {
         List<YachtDTO> yachtDTOS = yachts.stream()
                 .map(this::mapYachtToDTO)
                 .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(yachtDTOS);
+        return yachtDTOS;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ResponseEntity<Long> countAllYachts() {
+    public Long countAllYachts() {
         Long count = yachtRepository.countAllBy();
-        return ResponseEntity.status(HttpStatus.OK).body(count);
+        return count;
     }
 
     /**
@@ -62,12 +62,11 @@ public class YachtServiceImpl implements YachtService {
      * @throws ResourceNotFoundException if yacht is not found
      */
     @Override
-    public ResponseEntity<YachtDTO> findYachtById(Long id) {
+    public YachtDTO findYachtById(Long id) {
         YachtDTO yachtDTO = yachtRepository.findById(id)
                 .map(this::mapYachtToDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Yacht not found."));
-
-        return ResponseEntity.status(HttpStatus.OK).body(yachtDTO);
+        return yachtDTO;
     }
 
     /**
@@ -76,14 +75,13 @@ public class YachtServiceImpl implements YachtService {
      */
     @Override
     @Transactional
-    public ResponseEntity<YachtDTO> addYacht(YachtCommand yachtCommand) {
+    public YachtDTO addYacht(YachtCommand yachtCommand) {
         Yacht yacht = mapCommandToYacht(yachtCommand);
 
         YachtDTO yachtDTO = Optional.of(yachtRepository.save(yacht))
                 .map(this::mapYachtToDTO)
                 .orElseThrow(() -> new TransactionFailedException("Yacht not added."));
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(yachtDTO);
+        return yachtDTO;
     }
 
     /**
@@ -93,7 +91,7 @@ public class YachtServiceImpl implements YachtService {
      */
     @Override
     @Transactional
-    public ResponseEntity<YachtDTO> editYacht(Long yachtId, YachtCommand yachtCommand) {
+    public YachtDTO editYacht(Long yachtId, YachtCommand yachtCommand) {
         if (!yachtRepository.existsById(yachtId)) {
             throw new ResourceNotFoundException("Yacht not found.");
         }
@@ -104,8 +102,7 @@ public class YachtServiceImpl implements YachtService {
         YachtDTO yachtDTO = Optional.of(yachtRepository.save(yacht))
                 .map(this::mapYachtToDTO)
                 .orElseThrow(() -> new TransactionFailedException("Yacht not edited."));
-
-        return ResponseEntity.status(HttpStatus.OK).body(yachtDTO);
+        return yachtDTO;
     }
 
     /**
@@ -114,12 +111,12 @@ public class YachtServiceImpl implements YachtService {
      */
     @Override
     @Transactional
-    public ResponseEntity<Long> deleteYacht(Long yachtId) {
+    public Long deleteYacht(Long yachtId) {
         Long removedYachtsCount = yachtRepository.removeById(yachtId);
         if (removedYachtsCount.equals(0L)) {
             throw new ResourceNotFoundException("Yacht not deleted.");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(removedYachtsCount);
+        return removedYachtsCount;
     }
 
     /**

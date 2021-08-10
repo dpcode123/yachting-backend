@@ -1,5 +1,6 @@
 package com.example.yachting.domain.yacht;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,8 @@ public class YachtController {
      */
     @GetMapping(path = "/public")
     public ResponseEntity<List<YachtDTO>> findAll() {
-        return yachtService.findAllYachts();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(yachtService.findAllYachts());
     }
 
     /**
@@ -42,7 +44,8 @@ public class YachtController {
      */
     @GetMapping(path = "/public/{yachtId}")
     public ResponseEntity<YachtDTO> findYachtById(@PathVariable Long yachtId) {
-        return yachtService.findYachtById(yachtId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(yachtService.findYachtById(yachtId));
     }
 
 
@@ -57,7 +60,8 @@ public class YachtController {
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/admin/add")
     public ResponseEntity<YachtDTO> addYacht(@Valid @RequestBody final YachtCommand yachtCommand) {
-        return yachtService.addYacht(yachtCommand);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(yachtService.addYacht(yachtCommand));
     }
 
     /**
@@ -69,7 +73,8 @@ public class YachtController {
     @Secured({"ROLE_ADMIN"})
     @PutMapping("/admin/edit/{yachtId}")
     public ResponseEntity<YachtDTO> editYacht(@PathVariable Long yachtId, @Valid @RequestBody final YachtCommand yachtCommand) {
-        return yachtService.editYacht(yachtId, yachtCommand);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(yachtService.editYacht(yachtId, yachtCommand));
     }
 
     /**
@@ -80,7 +85,8 @@ public class YachtController {
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/admin/delete/{yachtId}")
     public ResponseEntity<Long> deleteYachtById(@PathVariable Long yachtId) {
-        return yachtService.deleteYacht(yachtId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(yachtService.deleteYacht(yachtId));
     }
 
     /**
@@ -89,6 +95,9 @@ public class YachtController {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping(path = "/admin/count")
-    public ResponseEntity<Long> countAllYachts() { return yachtService.countAllYachts(); }
+    public ResponseEntity<Long> countAllYachts() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(yachtService.countAllYachts());
+    }
 
 }
