@@ -1,5 +1,6 @@
 package com.example.yachting.domain.shipyard;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -7,6 +8,7 @@ import lombok.Data;
  * @author dp
  */
 @Data
+@AllArgsConstructor
 public class ShipyardDTO {
         private Long id;
         private String name;
