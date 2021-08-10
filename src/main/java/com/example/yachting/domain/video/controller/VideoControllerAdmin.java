@@ -80,7 +80,7 @@ public class VideoControllerAdmin {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/filtered-paginated")
-    public ResponseEntity<Page<VideoDTO>> findPaginatedAdminVideosFilteredByEntityStatus(VideosPageAdmin videosPageAdmin, EntityStatus entityStatus) {
+    public ResponseEntity<Page<VideoDTO>> findAdminVideosPaginatedFilteredByEntityStatus(VideosPageAdmin videosPageAdmin, EntityStatus entityStatus) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(videoService.getPaginatedVideosAdminFilteredByEntityStatus(videosPageAdmin, entityStatus));
     }
