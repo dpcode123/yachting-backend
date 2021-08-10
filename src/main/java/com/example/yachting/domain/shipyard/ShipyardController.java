@@ -1,5 +1,6 @@
 package com.example.yachting.domain.shipyard;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,8 @@ public class ShipyardController {
      */
     @GetMapping(path = "/public")
     public ResponseEntity<List<ShipyardDTO>> findAll() {
-        return shipyardService.findAllShipyards();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(shipyardService.findAllShipyards());
     }
 
     /**
@@ -42,7 +44,8 @@ public class ShipyardController {
      */
     @GetMapping(path = "/public/{shipyardId}")
     public ResponseEntity<ShipyardDTO> findShipyardById(@PathVariable Long shipyardId) {
-        return shipyardService.findShipyardById(shipyardId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(shipyardService.findShipyardById(shipyardId));
     }
 
 
@@ -57,7 +60,8 @@ public class ShipyardController {
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/admin/add")
     public ResponseEntity<ShipyardDTO> addShipyard(@Valid @RequestBody final ShipyardCommand shipyardCommand) {
-        return shipyardService.addShipyard(shipyardCommand);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(shipyardService.addShipyard(shipyardCommand));
     }
 
     /**
@@ -69,7 +73,8 @@ public class ShipyardController {
     @Secured({"ROLE_ADMIN"})
     @PutMapping("/admin/edit/{shipyardId}")
     public ResponseEntity<ShipyardDTO> editShipyard(@PathVariable Long shipyardId, @Valid @RequestBody final ShipyardCommand shipyardCommand) {
-        return shipyardService.editShipyard(shipyardId, shipyardCommand);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(shipyardService.editShipyard(shipyardId, shipyardCommand));
     }
 
     /**
@@ -80,7 +85,8 @@ public class ShipyardController {
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/admin/delete/{shipyardId}")
     public ResponseEntity<Long> deleteShipyardById(@PathVariable Long shipyardId) {
-        return shipyardService.deleteShipyard(shipyardId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(shipyardService.deleteShipyard(shipyardId));
     }
 
     /**
@@ -89,6 +95,9 @@ public class ShipyardController {
      */
     @Secured({"ROLE_ADMIN"})
     @GetMapping(path = "/admin/count")
-    public ResponseEntity<Long> countAllShipyards() { return shipyardService.countAllShipyards(); }
+    public ResponseEntity<Long> countAllShipyards() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(shipyardService.countAllShipyards());
+    }
 
 }
