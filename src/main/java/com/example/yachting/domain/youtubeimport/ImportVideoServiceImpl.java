@@ -8,7 +8,7 @@ import com.example.yachting.domain.youtubeimport.youtubeapi.YoutubeRepository;
 import com.example.yachting.domain.youtubeimport.youtubeapi.model.ResultsOfImportingByKeyword;
 import com.example.yachting.domain.youtubeimport.youtubeapi.model.SearchResponseObjectListOfVideos;
 import com.example.yachting.domain.youtubeimport.youtubeapi.model.YoutubeVideoFromList;
-import com.example.yachting.exception.exceptions.ResourceNotFoundException;
+import com.example.yachting.exception.exceptions.NoContentFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,7 @@ public class ImportVideoServiceImpl implements ImportVideoService {
      * Gets list of videos from youtube.
      * For each fetched video, checks if it's already in repo.
      * If not, then imports it to repo.
-     * @throws ResourceNotFoundException if no videos are found
+     * @throws NoContentFoundException if no videos are found
      */
     @Override
     public ResponseEntity<ResultsOfImportingByKeyword> importVideosByKeyword(ImportVideosByKeywordCommand importVideosByKeywordCommand) {
@@ -49,7 +49,7 @@ public class ImportVideoServiceImpl implements ImportVideoService {
         List<YoutubeVideoFromList> videosFetchedFromYoutube = searchResponseObjectListOfVideos.getJsonItems();
 
         if (videosFetchedFromYoutube.isEmpty()) {
-            throw new ResourceNotFoundException("No videos found.");
+            throw new NoContentFoundException("No videos fetched from youtube api.");
         }
 
         String nextPageToken = searchResponseObjectListOfVideos.getNextPageToken();

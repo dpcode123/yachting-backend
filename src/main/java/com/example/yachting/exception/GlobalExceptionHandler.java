@@ -1,5 +1,6 @@
 package com.example.yachting.exception;
 
+
 import com.example.yachting.exception.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,46 +16,52 @@ import java.util.Date;
 @RestController
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(NoContentFoundException.class)
+    public final ResponseEntity<ApiException> handleNoContentFoundException(NoContentFoundException exception, WebRequest request) {
+        HttpStatus httpStatus = HttpStatus.NO_CONTENT;
+        return createApiExceptionResponseEntity(exception, request, httpStatus);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
-    public final ResponseEntity<ApiException> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+    public final ResponseEntity<ApiException> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest request) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-        ApiException apiException = new ApiException(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(apiException, httpStatus);
+        return createApiExceptionResponseEntity(exception, request, httpStatus);
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
-    public final ResponseEntity<ApiException> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex, WebRequest request) {
+    public final ResponseEntity<ApiException> handleResourceAlreadyExistsException(ResourceAlreadyExistsException exception, WebRequest request) {
         HttpStatus httpStatus = HttpStatus.CONFLICT;
-        ApiException apiException = new ApiException(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(apiException, httpStatus);
+        return createApiExceptionResponseEntity(exception, request, httpStatus);
     }
 
     @ExceptionHandler(TransactionFailedException.class)
-    public final ResponseEntity<ApiException> handleTransactionFailedException(TransactionFailedException ex, WebRequest request) {
+    public final ResponseEntity<ApiException> handleTransactionFailedException(TransactionFailedException exception, WebRequest request) {
         HttpStatus httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
-        ApiException apiException = new ApiException(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(apiException, httpStatus);
+        return createApiExceptionResponseEntity(exception, request, httpStatus);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public final ResponseEntity<ApiException> handleUnauthorizedException(UnauthorizedException ex, WebRequest request) {
+    public final ResponseEntity<ApiException> handleUnauthorizedException(UnauthorizedException exception, WebRequest request) {
         HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
-        ApiException apiException = new ApiException(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(apiException, httpStatus);
+        return createApiExceptionResponseEntity(exception, request, httpStatus);
     }
 
     @ExceptionHandler(CustomException.class)
-    public final ResponseEntity<ApiException> handleCustomException(CustomException ex, WebRequest request) {
+    public final ResponseEntity<ApiException> handleCustomException(CustomException exception, WebRequest request) {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ApiException apiException = new ApiException(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(apiException, httpStatus);
+        return createApiExceptionResponseEntity(exception, request, httpStatus);
     }
 
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<ApiException> handleAllExceptions(Exception ex, WebRequest request) {
+    public final ResponseEntity<ApiException> handleAllExceptions(Exception exception, WebRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        ApiException apiException = new ApiException(new Date(), ex.getMessage(), request.getDescription(false));
+        return createApiExceptionResponseEntity(exception, request, httpStatus);
+    }
+
+    private ResponseEntity<ApiException> createApiExceptionResponseEntity(Exception exception, WebRequest request, HttpStatus httpStatus) {
+        ApiException apiException = new ApiException(new Date(), exception.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(apiException, httpStatus);
     }
+
 }
 

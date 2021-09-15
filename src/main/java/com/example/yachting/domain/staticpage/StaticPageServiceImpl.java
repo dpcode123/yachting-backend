@@ -1,5 +1,6 @@
 package com.example.yachting.domain.staticpage;
 
+import com.example.yachting.exception.exceptions.NoContentFoundException;
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,11 @@ public class StaticPageServiceImpl implements StaticPageService {
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException if static page is not found
+     * @throws NoContentFoundException if static page is not found
      */
     @Override
     public StaticPage getStaticPage(String name) {
-        StaticPage staticPage = staticPageRepository.findByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Static page not found."));
-        return staticPage;
+        return staticPageRepository.findByName(name)
+                .orElseThrow(() -> new NoContentFoundException("Static page not found."));
     }
 }

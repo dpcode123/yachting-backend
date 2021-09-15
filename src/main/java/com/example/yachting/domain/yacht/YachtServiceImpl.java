@@ -1,6 +1,7 @@
 package com.example.yachting.domain.yacht;
 
 import com.example.yachting.domain.shipyard.ShipyardRepository;
+import com.example.yachting.exception.exceptions.NoContentFoundException;
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
 import com.example.yachting.exception.exceptions.TransactionFailedException;
 import lombok.RequiredArgsConstructor;
@@ -27,41 +28,34 @@ public class YachtServiceImpl implements YachtService {
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException if no yachts are found
+     * @throws NoContentFoundException if no yachts are found
      */
     @Override
     @Transactional(readOnly = true)
     public List<YachtDTO> findAllYachts() {
-        List<Yacht> yachts = yachtRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-        if(yachts.isEmpty()) {
-            throw new ResourceNotFoundException("No yachts found.");
-        }
-
-        List<YachtDTO> yachtDTOS = yachts.stream()
+        return yachtRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
+                .stream()
                 .map(this::mapYachtToDTO)
                 .collect(Collectors.toList());
-        return yachtDTOS;
     }
 
     /** {@inheritDoc} */
     @Override
     @Transactional(readOnly = true)
     public Long countAllYachts() {
-        Long count = yachtRepository.countAllBy();
-        return count;
+        return yachtRepository.countAllBy();
     }
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException if yacht is not found
+     * @throws NoContentFoundException if yacht is not found
      */
     @Override
     @Transactional(readOnly = true)
     public YachtDTO findYachtById(Long id) {
-        YachtDTO yachtDTO = yachtRepository.findById(id)
+        return yachtRepository.findById(id)
                 .map(this::mapYachtToDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Yacht not found."));
-        return yachtDTO;
+                .orElseThrow(() -> new NoContentFoundException("Yacht not found."));
     }
 
     /**
@@ -81,14 +75,14 @@ public class YachtServiceImpl implements YachtService {
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException if yacht is not found
+     * @throws NoContentFoundException if yacht is not found
      * @throws TransactionFailedException if yacht editing transaction failed
      */
     @Override
     @Transactional
     public YachtDTO editYacht(Long yachtId, YachtCommand yachtCommand) {
         if (!yachtRepository.existsById(yachtId)) {
-            throw new ResourceNotFoundException("Yacht not found.");
+            throw new NoContentFoundException("Yacht not found.");
         }
 
         Yacht yacht = mapCommandToYacht(yachtCommand);
@@ -102,14 +96,14 @@ public class YachtServiceImpl implements YachtService {
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException if yacht deleting transaction failed
+     * @throws TransactionFailedException if yacht deleting transaction failed
      */
     @Override
     @Transactional
     public Long deleteYacht(Long yachtId) {
         Long removedYachtsCount = yachtRepository.removeById(yachtId);
         if (removedYachtsCount.equals(0L)) {
-            throw new ResourceNotFoundException("Yacht not deleted.");
+            throw new TransactionFailedException("Yacht not deleted.");
         }
         return removedYachtsCount;
     }
@@ -117,12 +111,13 @@ public class YachtServiceImpl implements YachtService {
     /**
      * Maps command to object.
      * First checks if yacht's shipyard exists.
+     * @throws NoContentFoundException if shipyard is not found
      * @param yachtCommand
      * @return Yacht object
      */
     private Yacht mapCommandToYacht(final YachtCommand yachtCommand) {
         if (!shipyardRepository.existsById(yachtCommand.getShipyardId())) {
-            throw new ResourceNotFoundException("Yacht's Shipyard not found.");
+            throw new NoContentFoundException("Yacht's Shipyard not found.");
         }
         return modelMapper.map(yachtCommand, Yacht.class);
     }
@@ -132,7 +127,7 @@ public class YachtServiceImpl implements YachtService {
      * @param yacht
      * @return YachtDTO object
      */
-    private YachtDTO mapYachtToDTO(Yacht yacht) {
+    private YachtDTO mapYachtToDTO(final Yacht yacht) {
         return modelMapper.map(yacht, YachtDTO.class);
     }
 }

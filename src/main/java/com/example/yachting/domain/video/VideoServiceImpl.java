@@ -9,6 +9,7 @@ import com.example.yachting.domain.video.page.VideosPageAdmin;
 import com.example.yachting.domain.video.page.VideosPagePublic;
 import com.example.yachting.domain.yacht.Yacht;
 import com.example.yachting.domain.yacht.YachtRepository;
+import com.example.yachting.exception.exceptions.NoContentFoundException;
 import com.example.yachting.exception.exceptions.ResourceNotFoundException;
 import com.example.yachting.exception.exceptions.TransactionFailedException;
 import lombok.RequiredArgsConstructor;
@@ -59,15 +60,33 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
      */
     @Override
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "videodetails", value="videodetails", key="#videoId")
     public VideoWithRelatedVideosDTO getCacheableVideoWithRelatedVideos(Long videoId) {
+        return getVideoWithRelatedVideosDTO(videoId);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public VideoWithRelatedVideosDTO getVideoWithRelatedVideos(Long videoId) {
+        return getVideoWithRelatedVideosDTO(videoId);
+    }
+
+    /**
+     * @param videoId
+     * @throws NoContentFoundException if video is not found
+     * If video has a yacht, get videos with the same yacht and the same shipyard.
+     * Otherwise, empty lists of related videos are added to DTO.
+     * @return video with videos related by yacht and shipyard
+     */
+    private VideoWithRelatedVideosDTO getVideoWithRelatedVideosDTO(Long videoId) {
         Video video = videoRepository.findById(videoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
+                .orElseThrow(() -> new NoContentFoundException("Video not found."));
 
         List<VideoDTO> relatedVideosSameYacht = new ArrayList<>();
         List<VideoDTO> relatedVideosSameShipyard = new ArrayList<>();
@@ -79,133 +98,111 @@ public class VideoServiceImpl implements VideoService {
             relatedVideosSameShipyard = getRelatedVideosByShipyard(shipyardId, videoId);
         }
 
-        VideoWithRelatedVideosDTO videoWithRelatedVideosDTO = new VideoWithRelatedVideosDTO(
+        return new VideoWithRelatedVideosDTO(
                 mapVideoToDTO(video),
                 relatedVideosSameYacht,
                 relatedVideosSameShipyard);
-
-        return videoWithRelatedVideosDTO;
     }
-
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
      */
     @Override
     @Transactional(readOnly = true)
     public List<VideoDTO> findAllVideos() {
-        List<Video> videos =  videoRepository.findAll();
-        if (videos.isEmpty()) {
-            throw new ResourceNotFoundException("No videos found.");
-        }
-
-        List<VideoDTO> videoDTOS = mapVideosToDTOS(videos);
-        return videoDTOS;
+        return videoRepository.findAll()
+                .stream()
+                .map(this::mapVideoToDTO)
+                .collect(Collectors.toList());
     }
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
      */
     @Override
     @Transactional(readOnly = true)
     public List<VideoDTO> findImportedVideos() {
-        List<Video> videos =  videoRepository.findAllByActiveTrueAndPublishedFalseOrderByImportedAtDesc();
-        if (videos.isEmpty()) {
-            throw new ResourceNotFoundException("No videos found.");
-        }
-
-        List<VideoDTO> videoDTOS = mapVideosToDTOS(videos);
-        return videoDTOS;
+        return videoRepository.findAllByActiveTrueAndPublishedFalseOrderByImportedAtDesc()
+                .stream()
+                .map(this::mapVideoToDTO)
+                .collect(Collectors.toList());
     }
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
      */
     @Override
     @Transactional(readOnly = true)
     public List<VideoDTO> findPublishedVideos() {
-        List<Video> videos =  videoRepository.findAllByActiveTrueAndPublishedTrueOrderByPublishedUpdatedAtDesc();
-        if (videos.isEmpty()) {
-            throw new ResourceNotFoundException("No videos found.");
-        }
-
-        List<VideoDTO> videoDTOS = mapVideosToDTOS(videos);
-        return videoDTOS;
+        return videoRepository.findAllByActiveTrueAndPublishedTrueOrderByPublishedUpdatedAtDesc()
+                .stream()
+                .map(this::mapVideoToDTO)
+                .collect(Collectors.toList());
     }
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
      */
     @Override
     @Transactional(readOnly = true)
     public List<VideoDTO> findInactiveVideos() {
-        List<Video> videos =  videoRepository.findAllByActiveFalseOrderByActiveUpdatedAtDesc();
-        if (videos.isEmpty()) {
-            throw new ResourceNotFoundException("No videos found.");
-        }
-
-        List<VideoDTO> videoDTOS = mapVideosToDTOS(videos);
-        return videoDTOS;
+        return videoRepository.findAllByActiveFalseOrderByActiveUpdatedAtDesc().stream()
+                .map(this::mapVideoToDTO)
+                .collect(Collectors.toList());
     }
 
     /** {@inheritDoc} */
     @Override
     @Transactional(readOnly = true)
     public Long countAllVideos() {
-        Long count = videoRepository.countAllBy();
-        return count;
+        return videoRepository.countAllBy();
     }
 
     /** {@inheritDoc} */
     @Override
     @Transactional(readOnly = true)
     public Long countImportedVideos() {
-        Long count = videoRepository.countAllByActiveTrueAndPublishedFalse();
-        return count;
+        return videoRepository.countAllByActiveTrueAndPublishedFalse();
     }
 
     /** {@inheritDoc} */
     @Override
     @Transactional(readOnly = true)
     public Long countPublishedVideos() {
-        Long count = videoRepository.countAllByActiveTrueAndPublishedTrue();
-        return count;
+        return videoRepository.countAllByActiveTrueAndPublishedTrue();
     }
 
     /** {@inheritDoc} */
     @Override
     @Transactional(readOnly = true)
     public Long countRemovedVideos() {
-        Long count = videoRepository.countAllByActiveFalse();
-        return count;
+        return videoRepository.countAllByActiveFalse();
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     * @throws NoContentFoundException if video is not found
+     */
     @Override
     @Transactional(readOnly = true)
     public VideoDTO findVideoById(Long videoId) {
         VideoDTO videoDTO = videoRepository.findById(videoId)
                 .map(this::mapVideoToDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
+                .orElseThrow(() -> new NoContentFoundException("Video not found."));
 
         return videoDTO;
     }
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException if video is not found
-     * @throws ResourceNotFoundException if video's yacht is not found
+     * @throws NoContentFoundException if video is not found
+     * @throws NoContentFoundException if video's yacht is not found
      * @throws TransactionFailedException if video saving transaction failed
      */
     @Override
     @Transactional
     public VideoDTO editVideo(Long videoId, VideoCommand videoCommand) {
         Video video = videoRepository.findById(videoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
+                .orElseThrow(() -> new NoContentFoundException("Video not found."));
 
         video.setTitle(videoCommand.getTitle());
         video.setYoutubeId(videoCommand.getYoutubeId());
@@ -213,7 +210,7 @@ public class VideoServiceImpl implements VideoService {
         Yacht yacht = null;
         if (videoCommand.getYachtId() != null) {
             yacht = yachtRepository.findById(videoCommand.getYachtId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Video's yacht not found."));
+                    .orElseThrow(() -> new NoContentFoundException("Video's yacht not found."));
         }
         video.setYacht(yacht);
 
@@ -224,34 +221,7 @@ public class VideoServiceImpl implements VideoService {
         return videoDTO;
     }
 
-    /**
-     * {@inheritDoc}
-     * If video has a yacht, get videos with the same yacht and same shipyard.
-     * Otherwise, empty lists of related videos are added to DTO.
-     * @throws ResourceNotFoundException if video is not found
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public VideoWithRelatedVideosDTO getVideoWithRelatedVideos(Long videoId) {
-        Video video = videoRepository.findById(videoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
 
-        List<VideoDTO> relatedVideosSameYacht = new ArrayList<>();
-        List<VideoDTO> relatedVideosSameShipyard = new ArrayList<>();
-
-        if(video.getYacht() != null) {
-            Long yachtId = video.getYacht().getId();
-            Long shipyardId = video.getYacht().getShipyard().getId();
-            relatedVideosSameYacht = getRelatedVideosByYacht(yachtId, videoId);
-            relatedVideosSameShipyard = getRelatedVideosByShipyard(shipyardId, videoId);
-        }
-
-        VideoWithRelatedVideosDTO videoWithRelatedVideosDTO = new VideoWithRelatedVideosDTO(
-                mapVideoToDTO(video),
-                relatedVideosSameYacht,
-                relatedVideosSameShipyard);
-        return videoWithRelatedVideosDTO;
-    }
 
 
 
@@ -280,46 +250,34 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
+     * @throws NoContentFoundException
      */
     @Override
     @Transactional(readOnly = true)
     public VideoDTO findVideoByYoutubeId(String youtubeId) {
         VideoDTO videoDTO = videoRepository.findByYoutubeId(youtubeId)
                 .map(this::mapVideoToDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
+                .orElseThrow(() -> new NoContentFoundException("Video not found."));
 
         return videoDTO;
     }
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
      */
     @Override
     @Transactional(readOnly = true)
     public List<VideoDTO> findVideosByYachtId(Long yachtId) {
-        List<VideoDTO> videoDTOS = getVideosByYacht(yachtId);
-        if(videoDTOS.isEmpty()) {
-            throw new ResourceNotFoundException("No videos found.");
-        }
-
-        return videoDTOS;
+        return getVideosByYacht(yachtId);
     }
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
      */
     @Override
     @Transactional(readOnly = true)
     public List<VideoDTO> findVideosByYachtShipyardId(Long shipyardId) {
-        List<VideoDTO> videoDTOS = getVideosByShipyard(shipyardId);
-        if(videoDTOS.isEmpty()) {
-            throw new ResourceNotFoundException("No videos found.");
-        }
-
-        return videoDTOS;
+        return getVideosByShipyard(shipyardId);
     }
 
 
@@ -327,13 +285,13 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
+     * @throws NoContentFoundException
      */
     @Override
     @Transactional
     public VideoDTO videoActivation(Long videoId, String activationAction) {
         Video video = videoRepository.findById(videoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
+                .orElseThrow(() -> new NoContentFoundException("Video not found."));
 
         Boolean videoActive = activationAction.equalsIgnoreCase(String.valueOf(ActivationAction.ACTIVATE)) ? true : false;
         video.setActive(videoActive);
@@ -345,13 +303,13 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * {@inheritDoc}
-     * @throws ResourceNotFoundException
+     * @throws NoContentFoundException
      */
     @Override
     @Transactional
     public VideoDTO videoPublishing(Long videoId, String publishingAction) {
         Video video = videoRepository.findById(videoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Video not found."));
+                .orElseThrow(() -> new NoContentFoundException("Video not found."));
 
         Boolean videoPublished = publishingAction.equalsIgnoreCase(String.valueOf(PublishingAction.PUBLISH)) ? true : false;
         video.setPublished(videoPublished);
@@ -370,8 +328,8 @@ public class VideoServiceImpl implements VideoService {
      * @return list of VideoDTOs
      */
     private List<VideoDTO> getVideosByYacht(Long yachtId) {
-        List<Video> videos = videoRepository.findByYachtId(yachtId);
-        return videos.stream()
+        return videoRepository.findByYachtId(yachtId)
+                .stream()
                 .map(this::mapVideoToDTO)
                 .collect(Collectors.toList());
     }
@@ -382,8 +340,8 @@ public class VideoServiceImpl implements VideoService {
      * @return list of VideoDTOs
      */
     private List<VideoDTO> getRelatedVideosByYacht(Long yachtId, Long videoId) {
-        List<Video> videos = videoRepository.findTop8ByYachtIdAndIdNot(yachtId, videoId);
-        return videos.stream()
+        return videoRepository.findTop8ByYachtIdAndIdNot(yachtId, videoId)
+                .stream()
                 .map(this::mapVideoToDTO)
                 .collect(Collectors.toList());
     }
@@ -397,8 +355,8 @@ public class VideoServiceImpl implements VideoService {
      * @return list of VideoDTOs
      */
     private List<VideoDTO> getVideosByShipyard(Long shipyardId) {
-        List<Video> videos = videoRepository.findByYachtShipyardId(shipyardId);
-        return videos.stream()
+        return videoRepository.findByYachtShipyardId(shipyardId)
+                .stream()
                 .map(this::mapVideoToDTO)
                 .collect(Collectors.toList());
     }
@@ -410,8 +368,8 @@ public class VideoServiceImpl implements VideoService {
      * @return list of VideoDTOs
      */
     private List<VideoDTO> getRelatedVideosByShipyard(Long shipyardId, Long videoId) {
-        List<Video> videos = videoRepository.findTop12ByYachtShipyardIdAndIdNot(shipyardId, videoId);
-        return videos.stream()
+        return videoRepository.findTop12ByYachtShipyardIdAndIdNot(shipyardId, videoId)
+                .stream()
                 .map(this::mapVideoToDTO)
                 .collect(Collectors.toList());
     }
@@ -424,7 +382,7 @@ public class VideoServiceImpl implements VideoService {
      * @param video
      * @return
      */
-    private VideoDTO mapVideoToDTO(Video video) {
+    private VideoDTO mapVideoToDTO(final Video video) {
         return modelMapper.map(video, VideoDTO.class);
     }
 
@@ -433,7 +391,7 @@ public class VideoServiceImpl implements VideoService {
      * @param videos
      * @return
      */
-    private List<VideoDTO> mapVideosToDTOS(List<Video> videos) {
+    private List<VideoDTO> mapVideosToDTOS(final List<Video> videos) {
         return videos.stream()
                 .map(this::mapVideoToDTO)
                 .collect(Collectors.toList());
